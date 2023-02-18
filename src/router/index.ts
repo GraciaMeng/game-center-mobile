@@ -5,22 +5,21 @@ const routes = [
     name: 'notFound',
     path: '/:path(.*)+',
     redirect: {
-      name: 'goods'
-    }
+      name: 'Home',
+    },
   },
   {
     name: 'Home',
     path: '/',
     component: () => import('@/views/Home/Index.vue'),
     meta: {
-      title: '首页'
-    }
+      title: '首页',
   },
 ]
 
 const router = createRouter({
   routes,
-  history: createWebHistory()
+  history: createWebHistory(),
 })
 
 router.beforeEach((to, from, next) => {
