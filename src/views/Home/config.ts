@@ -1,10 +1,4 @@
-import type { Condition } from './components/SortCondition.vue'
-
-interface GameItemInterface {
-  key: string
-  title: string
-  imgUrl: string
-}
+import type { Condition, GameItemInterface, OrderSort } from './types'
 
 export const gameList: GameItemInterface[] = [
   {
@@ -37,7 +31,7 @@ export const defaultConditionList = (): Condition[] => [
   },
   {
     key: 'order',
-    title: '区服',
+    title: '默认排序',
     icon: 'arrow-down',
   },
   {
@@ -45,4 +39,11 @@ export const defaultConditionList = (): Condition[] => [
     title: '筛选',
     icon: 'wap-nav',
   },
+]
+
+export const orderSortMap: OrderSort[] = [
+  { id: '', name: '默认排序' },
+  { id: 'upper_at_desc', name: '最新发布' },
+  { id: 'price_asc', name: '价格最低' },
+  { id: 'price_desc', name: '价格最高' },
 ]

@@ -1,6 +1,5 @@
 <template>
   <Popup v-model:show="composeShow" round position="right" :style="{ width: '85%', height: '100%' }">
-    <div style="height: 20px"></div>
     <div class="right-popup-content">
       <slot name="default" />
     </div>
@@ -19,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button, Popup, Sticky } from 'vant'
+import { Popup, Sticky } from 'vant'
 import { useVModel } from '@/hooks'
 const props = defineProps<{
   show: boolean
@@ -37,6 +36,8 @@ const composeShow = useVModel(props, 'show', emits)
     overflow: auto;
   }
   &-content {
+    margin: 15px 0px 0px;
+    padding: 15px;
     height: calc(100vh - 98px);
     overflow-y: auto;
     box-sizing: border-box;

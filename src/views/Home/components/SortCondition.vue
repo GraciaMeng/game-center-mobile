@@ -13,12 +13,7 @@
 <script setup lang="ts">
 import { Icon } from 'vant'
 import { computed } from 'vue'
-export interface Condition {
-  key: string
-  title: string
-  icon: string
-  isSelect?: boolean
-}
+import type { Condition } from '../types'
 const props = defineProps<{
   conditionList: Condition[]
 }>()

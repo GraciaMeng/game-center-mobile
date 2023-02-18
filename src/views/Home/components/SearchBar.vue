@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <div class="search-body"> 请输入商品内容或编号 </div>
+    <div class="search-body">请输入商品内容或编号</div>
     <div class="search-home">
       <Icon name="search" color="#5468FF" size="24" />
     </div>
@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from 'vant';
+import { Icon } from 'vant'
 </script>
 
 <style lang="less" scoped>
