@@ -1,5 +1,5 @@
 <template>
-  <div class="search-container">
+  <div class="search-container" @click="onGoSearch">
     <div class="search-body">请输入商品内容或编号</div>
     <div class="search-home">
       <Icon name="search" color="#5468FF" size="24" />
@@ -9,6 +9,20 @@
 
 <script setup lang="ts">
 import { Icon } from 'vant'
+import { useRouter } from 'vue-router'
+
+const props = defineProps<{
+  gameId: number
+}>()
+const router = useRouter()
+const onGoSearch = () => {
+  router.push({
+    name: 'Search',
+    query: {
+      gameId: props.gameId,
+    },
+  })
+}
 </script>
 
 <style lang="less" scoped>

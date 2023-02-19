@@ -2,7 +2,7 @@ import type { BaseResponse } from './base'
 
 export interface GameInterface {
   id: number
-  images: number
+  images: string
   title: string
 }
 

@@ -40,6 +40,10 @@ function onSelectGame(key: number) {
 
 <style lang="less" scoped>
 .game {
+  &-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
   &-item {
     display: flex;
     flex-direction: column;

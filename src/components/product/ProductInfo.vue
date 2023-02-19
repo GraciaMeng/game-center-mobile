@@ -14,7 +14,7 @@
       <p class="product-desc">
         <em
           >商品编号：{{ info.id }}
-          <img src="../../assets/icons/copy.svg" class="copy" alt="copy" @click="onCopy" />
+          <img src="@/assets/icons/copy.svg" class="copy" alt="copy" @click="onCopy" />
         </em>
         <span class="product-time">上架时间：{{ info.addtime }}</span>
       </p>

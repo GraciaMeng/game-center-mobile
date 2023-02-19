@@ -24,6 +24,14 @@ const routes = [
       title: '账号详情',
     },
   },
+  {
+    name: 'Search',
+    path: '/search',
+    component: () => import('@/views/Search/Index.vue'),
+    meta: {
+      title: '选号',
+    },
+  },
 ]
 
 const router = createRouter({

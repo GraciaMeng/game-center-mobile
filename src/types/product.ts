@@ -28,6 +28,7 @@ export interface GetProductListParams {
   sort?: SortEnum
   price_start?: number
   price_end?: number
+  key?: string
 }
 
 export interface SkinInfo {

@@ -1,6 +1,6 @@
 <template>
   <div class="home-container">
-    <SearchBar />
+    <SearchBar :game-id="activeGameKey" />
     <GameBar v-model:active-key="activeGameKey" :game-list="gameList" @select="onSelectGame" />
     <SortCondition :condition-list="conditionList" @on-popup="onConditionPopup" />
     <ProductList ref="ProductListRef" :load-fn="onLoad" @on-product-click="onProductClick" />
@@ -40,8 +40,9 @@ import { defaultConditionList, orderSortMap } from './config'
 import type { OrderSort, SortType } from './types'
 import { useRadioSelect } from './hooks/useRadioSelect'
 import ProductList from '@/components/product/ProductList.vue'
-import type { AreaInterface, GameInterface, ProductInterface, SortEnum } from '@/types'
-import { getAreaList, getGameList, getProductList } from '@/api'
+import type { AreaInterface, ProductInterface, SortEnum } from '@/types'
+import { getAreaList, getProductList } from '@/api'
+import { useGameList } from '@/hooks'
 
 const router = useRouter()
 
@@ -89,13 +90,11 @@ const onSelectOrder = (action: OrderSort) => {
 }
 
 const activeGameKey = ref(1)
-const gameList = ref<GameInterface[]>([])
+const { gameList, getGameData } = useGameList()
 function loadGame() {
-  getGameList().then((res) => {
-    const { data } = res
-    gameList.value = data
-    if (data.length) {
-      getAreaData(data[0].id)
+  getGameData().then((res) => {
+    if (res.length) {
+      getAreaData(res[0].id)
     }
   })
 }
@@ -133,10 +132,5 @@ const onProductClick = (product: ProductInterface) => {
 .home-container {
   padding-left: 30px;
   padding-right: 30px;
-}
-
-.game-container {
-  display: flex;
-  flex-wrap: wrap;
 }
 </style>

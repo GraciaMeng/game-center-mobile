@@ -18,8 +18,6 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Icon } from 'vant'
-import { it } from 'node:test'
-import { data } from './config'
 import FunctionContent from './components/FunctionContent.vue'
 import NavBar from '@/components/layout/NavBar.vue'
 import ProductInfo from '@/components/product/ProductInfo.vue'
@@ -36,7 +34,7 @@ const functionList = ref<any[]>([])
 function getDetail() {
   getProductInfo({ id: goods_id as string }).then((res) => {
     detail.value = res.data
-    const { screen_shot, skin_info } = res.data
+    const { screen_shot, skin_info, base_info } = res.data
     functionList.value = [
       {
         title: '游戏截图',
@@ -62,6 +60,16 @@ function getDetail() {
                 image: BASE_URL + item.images,
               }
             }),
+          },
+        ],
+      },
+      {
+        title: '基本信息',
+        tag: [
+          {
+            title: '基本信息',
+            type: 'text',
+            values: base_info,
           },
         ],
       },

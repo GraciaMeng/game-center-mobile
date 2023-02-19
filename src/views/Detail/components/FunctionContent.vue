@@ -11,9 +11,8 @@
           <template v-if="item.num !== 0 || item.type === 'text'">
             <h4 class="func-title"><span>&nbsp;</span>{{ item.title }}</h4>
             <template v-if="item.type === 'text'">
-              <div class="text-box">
-                <p v-for="(valueItem, valueIndex) in item.values" :key="valueIndex">{{ valueItem }}</p>
-              </div>
+              <!-- <p v-for="(valueItem, valueIndex) in item.values" :key="valueIndex">{{ valueItem }}</p> -->
+              <div class="text-box" v-html="item.values"></div>
             </template>
             <template v-else-if="item.type === 'l'">
               <Row>
