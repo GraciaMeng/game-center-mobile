@@ -4,11 +4,22 @@
     <GameBar @select="onSelectGame" />
     <SortCondition :condition-list="conditionList" @on-popup="onConditionPopup" />
     <ProductList :load-fn="onLoad" @on-product-click="onProductClick" />
-    <RightPopup v-model:show="conditionPopupState.area_id">
+    <RightPopup
+      v-model:show="conditionPopupState.area_id"
+      @ok="onAreaOk"
+      @click-overlay="onAreaReset"
+      @reset="onAreaReset"
+    >
       <ButtonRadioGroup
         v-model:checked="areaChecked"
         title="大区"
         :radio-list="wzryArea"
+        :fields-name="{ label: 'title', value: 'id' }"
+      />
+      <ButtonCheckboxGroup
+        v-model:checked="tempAreaChecked"
+        title="大区"
+        :list="wzryArea"
         :fields-name="{ label: 'title', value: 'id' }"
       />
     </RightPopup>
@@ -33,6 +44,8 @@ import ButtonRadioGroup from './components/ButtonRadioGroup.vue'
 import { defaultConditionList, orderSortMap } from './config'
 import { wzryArea } from './wzry-config'
 import type { OrderSort, SortType } from './types'
+import ButtonCheckboxGroup from './components/ButtonCheckboxGroup.vue'
+import { useRadioSelect } from './hooks/useRadioSelect'
 import ProductList from '@/components/product/ProductList.vue'
 import type { ProductInterface } from '@/types'
 
@@ -47,10 +60,25 @@ const conditionPopupState = reactive<Record<SortType, boolean>>({
 })
 const conditionList = reactive(defaultConditionList())
 const onConditionPopup = (key: string) => {
+  const map: Record<string, Function> = {
+    area_id: handleArea,
+  }
+  if (map[key]) {
+    map[key]()
+  }
   conditionPopupState[key as SortType] = true
 }
 
-const areaChecked = ref<number>(0)
+const tempAreaChecked = ref<number[]>([])
+const [areaChecked, cacheArea, onAreaReset] = useRadioSelect(0)
+function handleArea() {
+  cacheArea()
+}
+const onAreaOk = () => {
+  if (areaChecked.value !== 0) {
+    conditionList[0].isSelect = true
+  }
+}
 
 const order = ref<string>('')
 const onSelectOrder = (action: OrderSort) => {

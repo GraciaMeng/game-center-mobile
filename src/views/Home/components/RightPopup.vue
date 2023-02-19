@@ -1,16 +1,29 @@
 <template>
-  <Popup v-model:show="composeShow" round position="right" :style="{ width: '85%', height: '100%' }">
+  <Popup
+    v-model:show="composeShow"
+    round
+    position="right"
+    safe-area-inset-bottom
+    :style="{ width: '85%', height: '100%' }"
+    v-bind="$attrs"
+  >
     <div class="right-popup-content">
       <slot name="default" />
     </div>
     <div class="right-popup-btn-group">
       <Sticky :offset-bottom="0" position="bottom">
         <div class="btn-group">
-          <div class="operation-button" style="background-color: rgba(84, 104, 255, 0.1); color: rgb(84, 104, 255)">
+          <div
+            class="operation-button"
+            style="background-color: rgba(84, 104, 255, 0.1); color: rgb(84, 104, 255)"
+            @click="onReset"
+          >
             重置
           </div>
           <div style="width: 15px"></div>
-          <div class="operation-button" style="background-color: rgb(84, 104, 255); color: white">确定</div>
+          <div class="operation-button" style="background-color: rgb(84, 104, 255); color: white" @click="onOk">
+            确定
+          </div>
         </div>
       </Sticky>
     </div>
@@ -25,8 +38,17 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (e: 'update:show', show: boolean): void
+  (e: 'reset'): void
+  (e: 'ok'): void
 }>()
 const composeShow = useVModel(props, 'show', emits)
+const onReset = () => {
+  emits('reset')
+}
+const onOk = () => {
+  composeShow.value = false
+  emits('ok')
+}
 </script>
 
 <style lang="less" scoped>
@@ -37,7 +59,6 @@ const composeShow = useVModel(props, 'show', emits)
   }
   &-content {
     margin: 15px 0px 0px;
-    padding: 15px;
     height: calc(100vh - 98px);
     overflow-y: auto;
     box-sizing: border-box;
