@@ -7,7 +7,7 @@ export interface GameItemInterface {
 }
 
 export interface OrderSort {
-  id: string
+  id?: number
   name: string
 }
 

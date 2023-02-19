@@ -6,9 +6,9 @@
       </template>
     </NavBar>
     <div class="detail-content">
-      <ProductInfo :info="data" />
+      <ProductInfo v-if="detail" :info="detail" />
       <div class="content">
-        <FunctionContent :tags="data.tags" />
+        <FunctionContent :tags="functionList" />
       </div>
     </div>
   </div>
@@ -16,16 +16,59 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
 import { Icon } from 'vant'
+import { it } from 'node:test'
 import { data } from './config'
 import FunctionContent from './components/FunctionContent.vue'
 import NavBar from '@/components/layout/NavBar.vue'
 import ProductInfo from '@/components/product/ProductInfo.vue'
+import { getProductInfo } from '@/api'
+import { BASE_URL } from '@/api/request'
+import type { ProductInfoInterface } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
 const { goods_id } = route.query
 
+const detail = ref<ProductInfoInterface | null>(null)
+const functionList = ref<any[]>([])
+function getDetail() {
+  getProductInfo({ id: goods_id as string }).then((res) => {
+    detail.value = res.data
+    const { screen_shot, skin_info } = res.data
+    functionList.value = [
+      {
+        title: '游戏截图',
+        tag: [
+          {
+            title: '游戏截图',
+            type: 'xxl',
+            num: screen_shot.length,
+            values: screen_shot.map((item) => BASE_URL + item),
+          },
+        ],
+      },
+      {
+        title: '皮肤',
+        tag: [
+          {
+            title: '皮肤',
+            type: 'xl',
+            num: skin_info.length,
+            values: skin_info.map((item) => {
+              return {
+                title: item.title,
+                image: BASE_URL + item.images,
+              }
+            }),
+          },
+        ],
+      },
+    ]
+  })
+}
+getDetail()
 function onBackHome() {
   router.push({
     name: 'Home',

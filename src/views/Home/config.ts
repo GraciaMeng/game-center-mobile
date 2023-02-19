@@ -1,4 +1,5 @@
 import type { Condition, GameItemInterface, OrderSort } from './types'
+import { SortEnum } from '@/types'
 
 export const gameList: GameItemInterface[] = [
   {
@@ -42,8 +43,8 @@ export const defaultConditionList = (): Condition[] => [
 ]
 
 export const orderSortMap: OrderSort[] = [
-  { id: '', name: '默认排序' },
-  { id: 'upper_at_desc', name: '最新发布' },
-  { id: 'price_asc', name: '价格最低' },
-  { id: 'price_desc', name: '价格最高' },
+  { id: undefined, name: '默认排序' },
+  { id: SortEnum.NEW, name: '最新发布' },
+  { id: SortEnum.MIN_PRICE, name: '价格最低' },
+  { id: SortEnum.MAX_PRICE, name: '价格最高' },
 ]

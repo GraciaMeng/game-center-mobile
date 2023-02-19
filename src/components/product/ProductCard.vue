@@ -1,7 +1,7 @@
 <template>
   <div class="product-card-container" @click="onClick">
-    <div v-if="product.images.length" class="product-img-wrapper">
-      <img class="product-img" :src="product.images[0]" alt="大图展示" />
+    <div v-if="product.images" class="product-img-wrapper">
+      <img class="product-img" :src="BASE_URL + product.images" alt="大图展示" />
     </div>
     <div class="product-info-wrapper">
       <div class="product-info-title">
@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import type { ProductInterface } from '@/types'
+import { BASE_URL } from '@/api/request'
 const props = defineProps<{
   product: ProductInterface
 }>()
@@ -64,6 +65,7 @@ const onClick = () => {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
+      -webkit-line-clamp: 10;
       line-clamp: 10;
     }
   }

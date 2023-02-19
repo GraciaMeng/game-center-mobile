@@ -1,9 +1,13 @@
 export interface PageInterface<T> {
-  list: T[]
-  pagination: {
-    page: number
-    pages: number
-    size: number
-    total: number
-  }
+  data: T[]
+  current_page: number
+  last_page: number
+  per_page: string
+  total: number
+}
+
+export interface BaseResponse<T> {
+  data: T
+  err_code: number
+  msg: string
 }

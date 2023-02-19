@@ -2,14 +2,13 @@
   <div class="game-container">
     <div
       v-for="item in gameList"
-      :key="item.key"
+      :key="item.id"
       :title="item.title"
-      :img-url="item.imgUrl"
       class="game-item"
-      :class="{ 'game-selected': activeGameKey === item.key }"
-      @click="onSelectGame(item.key)"
+      :class="{ 'game-selected': composeActiveKey === item.id }"
+      @click="onSelectGame(item.id)"
     >
-      <VanImage width="44" height="44" :src="item.imgUrl" />
+      <VanImage width="44" height="44" :src="BASE_URL + item.images" />
       <div class="game-title">
         {{ item.title }}
       </div>
@@ -18,16 +17,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Image as VanImage } from 'vant'
-import { gameList } from '../config'
+import type { GameInterface } from '@/types'
+import { BASE_URL } from '@/api/request'
+import { useVModel } from '@/hooks'
 
-const emits = defineEmits<{
-  (e: 'select', key: string): void
+const props = defineProps<{
+  activeKey: number
+  gameList: GameInterface[]
 }>()
-const activeGameKey = ref('wzry')
-function onSelectGame(key: string) {
-  activeGameKey.value = key
+const emits = defineEmits<{
+  (e: 'update:activeKey', activeKey: number): void
+  (e: 'select', key: number): void
+}>()
+const composeActiveKey = useVModel(props, 'activeKey', emits)
+
+function onSelectGame(key: number) {
+  composeActiveKey.value = key
   emits('select', key)
 }
 </script>

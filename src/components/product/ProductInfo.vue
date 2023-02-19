@@ -2,9 +2,8 @@
   <div class="product-info-container">
     <div class="product-info">
       <p class="product-status">
-        <img class="product-img" :src="info.image" alt="类别icon" />
-        {{ info.area }} {{ info.server }}
-        <span>{{ info.status_desc }}</span>
+        <!-- <img class="product-img" :src="info.images" alt="类别icon" /> -->
+        {{ info.title }}
       </p>
       <p class="product-title">
         <span>¥{{ info.price }}</span>
@@ -17,7 +16,7 @@
           >商品编号：{{ info.id }}
           <img src="../../assets/icons/copy.svg" class="copy" alt="copy" @click="onCopy" />
         </em>
-        <span class="product-time">上架时间：{{ info.upper_at }}</span>
+        <span class="product-time">上架时间：{{ info.addtime }}</span>
       </p>
     </div>
   </div>
@@ -26,13 +25,14 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { useCopy } from '@/hooks'
+import type { ProductInfoInterface } from '@/types'
 const props = defineProps<{
-  info: any
+  info: ProductInfoInterface
 }>()
 
 const { copyToClipboard } = useCopy()
 const onCopy = () => {
-  copyToClipboard(props.info.id)
+  copyToClipboard(String(props.info.id))
     .then(() => {
       showToast('复制成功')
     })

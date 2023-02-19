@@ -1,9 +1,10 @@
 <template>
   <div class="home-container">
     <SearchBar />
-    <GameBar @select="onSelectGame" />
+    <GameBar v-model:active-key="activeGameKey" :game-list="gameList" @select="onSelectGame" />
     <SortCondition :condition-list="conditionList" @on-popup="onConditionPopup" />
-    <ProductList :load-fn="onLoad" @on-product-click="onProductClick" />
+    <ProductList ref="ProductListRef" :load-fn="onLoad" @on-product-click="onProductClick" />
+    <!-- 王者 -->
     <RightPopup
       v-model:show="conditionPopupState.area_id"
       @ok="onAreaOk"
@@ -13,13 +14,7 @@
       <ButtonRadioGroup
         v-model:checked="areaChecked"
         title="大区"
-        :radio-list="wzryArea"
-        :fields-name="{ label: 'title', value: 'id' }"
-      />
-      <ButtonCheckboxGroup
-        v-model:checked="tempAreaChecked"
-        title="大区"
-        :list="wzryArea"
+        :radio-list="areaList"
         :fields-name="{ label: 'title', value: 'id' }"
       />
     </RightPopup>
@@ -42,16 +37,15 @@ import SortCondition from './components/SortCondition.vue'
 import RightPopup from './components/RightPopup.vue'
 import ButtonRadioGroup from './components/ButtonRadioGroup.vue'
 import { defaultConditionList, orderSortMap } from './config'
-import { wzryArea } from './wzry-config'
 import type { OrderSort, SortType } from './types'
-import ButtonCheckboxGroup from './components/ButtonCheckboxGroup.vue'
 import { useRadioSelect } from './hooks/useRadioSelect'
 import ProductList from '@/components/product/ProductList.vue'
-import type { ProductInterface } from '@/types'
+import type { AreaInterface, GameInterface, ProductInterface, SortEnum } from '@/types'
+import { getAreaList, getGameList, getProductList } from '@/api'
 
 const router = useRouter()
 
-function onSelectGame(key: string) {}
+const ProductListRef = ref<InstanceType<typeof ProductList> | null>(null)
 
 const conditionPopupState = reactive<Record<SortType, boolean>>({
   area_id: false,
@@ -69,47 +63,60 @@ const onConditionPopup = (key: string) => {
   conditionPopupState[key as SortType] = true
 }
 
-const tempAreaChecked = ref<number[]>([])
-const [areaChecked, cacheArea, onAreaReset] = useRadioSelect(0)
+const [areaChecked, cacheArea, onAreaReset] = useRadioSelect<number | undefined>(undefined)
 function handleArea() {
   cacheArea()
 }
 const onAreaOk = () => {
-  if (areaChecked.value !== 0) {
+  if (areaChecked.value) {
     conditionList[0].isSelect = true
   }
 }
+const areaList = ref<AreaInterface[]>([])
+const getAreaData = (gameId: number) => {
+  return getAreaList({ game_id: gameId }).then((res) => {
+    areaList.value = res.data
+  })
+}
 
-const order = ref<string>('')
+const order = ref<undefined | SortEnum>(undefined)
 const onSelectOrder = (action: OrderSort) => {
   conditionPopupState.order = false
-  order.value = action.id
+  order.value = action.id as any
   conditionList[1].title = action.name
-  conditionList[1].isSelect = action.id !== ''
+  conditionList[1].isSelect = action.id !== undefined
+  ProductListRef.value?.onRefresh()
+}
+
+const activeGameKey = ref(1)
+const gameList = ref<GameInterface[]>([])
+function loadGame() {
+  getGameList().then((res) => {
+    const { data } = res
+    gameList.value = data
+    if (data.length) {
+      getAreaData(data[0].id)
+    }
+  })
+}
+loadGame()
+function onSelectGame(key: number) {
+  order.value = undefined
+  areaChecked.value = undefined
+  getAreaData(key).then(() => {
+    ProductListRef.value?.onRefresh()
+  })
 }
 
 const onLoad = (pagination: { page: number; size: number }) => {
-  return Promise.resolve().then(() => {
-    return {
-      list: [
-        {
-          id: 292169,
-          image: '',
-          image_type: 'xxl',
-          images: ['https://file.kejinlianmeng.com/official/202302/18/16/51358TOiktlR.jpg'],
-          price: '1804',
-          sub_title:
-            '冒险等级58级42黄神里绫人1命钟离魈珊瑚宫心海阿贝多枫原万叶温迪申鹤3命优菈甘雨雷电将军夜兰1命胡桃可莉迪卢克3命琴1命莫娜七七埃洛伊冬极白星终末嗟叹之诗阿莫斯之弓天空之翼四风原典和璞鸢贯虹之槊护摩之杖无工之剑松籁响起之时精2狼的末路拨乱月白经津斫峰之刃',
-          title: '官服 天空岛',
-        },
-      ],
-      pagination: {
-        page: 1,
-        size: 15,
-        pages: 1,
-        total: 1,
-      },
-    }
+  return getProductList({
+    page: pagination.page,
+    limit: pagination.size,
+    game_id: 3,
+    sort: order.value,
+    area_id: areaChecked.value,
+  }).then((res) => {
+    return res.data
   })
 }
 const onProductClick = (product: ProductInterface) => {

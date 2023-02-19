@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { List, PullRefresh } from 'vant'
-import { reactive, ref } from 'vue'
+import { defineExpose, reactive, ref } from 'vue'
 import ProductCard from './ProductCard.vue'
 import type { PageInterface, ProductInterface } from '@/types'
 
@@ -37,16 +37,37 @@ const onLoad = () => {
   props
     .loadFn({ page: paginationState.page, size: paginationState.size })
     .then((res) => {
-      const { list, pagination } = res
-      productList.value.push(...list)
-      Object.assign(paginationState, pagination)
-      if (pagination.page === pagination.pages) {
+      const { data, current_page, total, last_page } = res
+      productList.value.push(...data, ...data, ...data)
+      Object.assign(paginationState, {
+        page: current_page,
+        pages: last_page,
+        total,
+      })
+      if (last_page === current_page) {
         finished.value = true
       }
     })
     .finally(() => {
       loading.value = false
     })
+  // props
+  //   .loadFn({ page: paginationState.page, size: paginationState.size })
+  //   .then((res) => {
+  //     const { data, current_page, total, last_page } = res
+  //     productList.value.push(...data)
+  //     Object.assign(paginationState, {
+  //       page: current_page,
+  //       pages: last_page,
+  //       total,
+  //     })
+  //     if (last_page === current_page) {
+  //       finished.value = true
+  //     }
+  //   })
+  //   .finally(() => {
+  //     loading.value = false
+  //   })
 }
 const onRefresh = () => {
   // 清空列表数据
@@ -60,6 +81,9 @@ const onRefresh = () => {
 const onProductClick = (product: ProductInterface) => {
   emits('onProductClick', product)
 }
+defineExpose({
+  onRefresh,
+})
 </script>
 
 <style lang="less" scoped></style>

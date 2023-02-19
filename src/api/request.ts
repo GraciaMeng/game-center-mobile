@@ -2,7 +2,7 @@ import type { AxiosError, AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 
 // 本地用代理，线上直接接口url
-export const BASE_URL = ['development'].includes(import.meta.env.MODE) ? '/api' : import.meta.env.VITE_APP_API_URL
+export const BASE_URL = import.meta.env.VITE_APP_API_URL
 
 const service = axios.create({
   // baseURL: BASE_URL, // 设置统一的请求前缀

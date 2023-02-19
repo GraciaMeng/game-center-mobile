@@ -8,7 +8,7 @@
 
 <style lang="less" scoped>
 .game-app {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background-color: #f3f5f9 !important;
 }
