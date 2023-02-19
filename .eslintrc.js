@@ -19,5 +19,7 @@ module.exports = {
     'vue/no-extra-parens': 0,
     'vue/v-on-event-hyphenation': 0,
     'prefer-promise-reject-errors': 0,
+    'vue/padding-line-between-blocks': 0,
+    'import/first': 0,
   },
 }

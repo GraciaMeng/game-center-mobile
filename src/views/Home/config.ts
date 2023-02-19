@@ -43,8 +43,23 @@ export const defaultConditionList = (): Condition[] => [
 ]
 
 export const orderSortMap: OrderSort[] = [
-  { id: undefined, name: '默认排序' },
+  { id: SortEnum.NEW, name: '默认排序' },
   { id: SortEnum.NEW, name: '最新发布' },
   { id: SortEnum.MIN_PRICE, name: '价格最低' },
   { id: SortEnum.MAX_PRICE, name: '价格最高' },
+]
+
+interface Filter {
+  id: number
+  title: string
+  min: number
+  max?: number
+}
+export const priceFilterMap: Filter[] = [
+  { id: 1, title: '500以下', min: 0, max: 500 },
+  { id: 2, title: '500-1000', min: 500, max: 1000 },
+  { id: 3, title: '1000-3000', min: 1000, max: 3000 },
+  { id: 4, title: '3000-10000', min: 3000, max: 10000 },
+  { id: 5, title: '10000-30000', min: 10000, max: 30000 },
+  { id: 6, title: '30000以上', min: 30000, max: undefined },
 ]

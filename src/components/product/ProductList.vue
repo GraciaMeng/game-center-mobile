@@ -1,17 +1,17 @@
 <template>
-  <PullRefresh v-model="refreshing" v-bind="$attrs" style="min-height: 100vh" @refresh="onRefresh">
+  <PullRefresh v-model="refreshing" class="product-list" v-bind="$attrs" @refresh="onRefresh">
     <List
       v-model:loading="loading"
       :finished="finished"
-      :immediate-check="immediate"
+      :immediate-check="false"
       finished-text="没有更多了"
       @load="onLoad"
     >
       <ProductCard v-for="item in productList" :key="item.id" :product="item" @click="onProductClick(item)" />
     </List>
     <Empty
-      v-if="!productList.length"
-      style="padding-top: 100px"
+      v-show="!productList.length"
+      style="padding-bottom: 100px"
       image="https://file.kejinshou.com/static/images/xuan/empty.png"
     />
   </PullRefresh>
@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { Empty, List, PullRefresh } from 'vant'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import ProductCard from './ProductCard.vue'
 import type { PageInterface, ProductInterface } from '@/types'
 
@@ -40,20 +40,21 @@ const loading = ref(false)
 const finished = ref(false)
 const refreshing = ref(false)
 
-const paginationState = reactive({
+const defaultPagination = () => ({
   page: 0,
   pages: 0,
   total: 0,
-  size: 15,
 })
+const paginationState = reactive(defaultPagination())
 const onLoad = () => {
   if (refreshing.value) {
     productList.value = []
     refreshing.value = false
   }
   paginationState.page += 1
+  if (paginationState.page === 2) return
   props
-    .loadFn({ page: paginationState.page, size: paginationState.size })
+    .loadFn({ page: paginationState.page, size: 15 })
     .then((res) => {
       const { data, current_page, total, last_page } = res
       productList.value.push(...data)
@@ -61,7 +62,7 @@ const onLoad = () => {
         pages: last_page,
         total,
       })
-      if (last_page === current_page) {
+      if (last_page <= current_page) {
         finished.value = true
       }
     })
@@ -69,9 +70,20 @@ const onLoad = () => {
       loading.value = false
     })
 }
+onMounted(() => {
+  if (props.immediate) {
+    onLoad()
+  }
+})
 const onRefresh = () => {
+  Object.assign(paginationState, defaultPagination())
   // 清空列表数据
   finished.value = false
+  productList.value = []
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
 
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态

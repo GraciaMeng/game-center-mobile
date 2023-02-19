@@ -14,9 +14,9 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Detail">
 import { useRoute, useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Icon } from 'vant'
 import FunctionContent from './components/FunctionContent.vue'
 import NavBar from '@/components/layout/NavBar.vue'
@@ -27,7 +27,7 @@ import type { ProductInfoInterface } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
-const { goods_id } = route.query
+const { goods_id, from } = route.query
 
 const detail = ref<ProductInfoInterface | null>(null)
 const functionList = ref<any[]>([])
@@ -76,10 +76,13 @@ function getDetail() {
     ]
   })
 }
+onMounted(() => {
+  console.log(11)
+})
 getDetail()
 function onBackHome() {
   router.push({
-    name: 'Home',
+    name: from === 'search' ? 'Search' : 'Home',
   })
 }
 </script>

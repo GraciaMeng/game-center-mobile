@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <CellGroup inset style="width: 100%">
-        <Field v-model="composeSearchValue" center placeholder="搜索商品编号/商品描述">
+        <Field v-model="composeSearchValue" center clearable placeholder="搜索商品编号/商品描述">
           <template #label>
             <div class="search-game-btn" @click="onSelectGame">
               <img v-if="activeGame?.images" :src="BASE_URL + activeGame.images" alt="" />
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { ActionSheet, CellGroup, Field, Icon } from 'vant'
+import { ActionSheet, CellGroup, Field, Icon, showToast } from 'vant'
 import { computed, ref } from 'vue'
 import { useGameList, useVModel } from '@/hooks'
 import { BASE_URL } from '@/api/request'
@@ -63,7 +63,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (e: 'update:gameId', value: number): void
-  (e: 'update:searchValue', value: number): void
+  (e: 'update:searchValue', value: string): void
   (e: 'search'): void
 }>()
 const router = useRouter()
@@ -86,6 +86,10 @@ function loadGame() {
 loadGame()
 
 function onSearch() {
+  if (!composeSearchValue.value.length) {
+    showToast('请输入商品编号/商品描述')
+    return
+  }
   emits('search')
 }
 function onBackHome() {
