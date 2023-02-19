@@ -14,6 +14,15 @@ const routes = [
     component: () => import('@/views/Home/Index.vue'),
     meta: {
       title: '首页',
+    },
+  },
+  {
+    name: 'Detail',
+    path: '/detail',
+    component: () => import('@/views/Detail/Index.vue'),
+    meta: {
+      title: '账号详情',
+    },
   },
 ]
 

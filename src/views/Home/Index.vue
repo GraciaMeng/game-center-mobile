@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ActionSheet } from 'vant'
+import { useRouter } from 'vue-router'
 import SearchBar from './components/SearchBar.vue'
 import GameBar from './components/GameBar.vue'
 import SortCondition from './components/SortCondition.vue'
@@ -34,6 +35,8 @@ import { wzryArea } from './wzry-config'
 import type { OrderSort, SortType } from './types'
 import ProductList from '@/components/product/ProductList.vue'
 import type { ProductInterface } from '@/types'
+
+const router = useRouter()
 
 function onSelectGame(key: string) {}
 
@@ -81,6 +84,13 @@ const onLoad = (pagination: { page: number; size: number }) => {
     }
   })
 }
+const onProductClick = (product: ProductInterface) => {
+  router.push({
+    name: 'Detail',
+    query: {
+      goods_id: product.id,
+    },
+  })
 }
 </script>
 
