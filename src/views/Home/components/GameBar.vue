@@ -43,6 +43,7 @@ function onSelectGame(key: number) {
   &-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
   &-item {
     display: flex;

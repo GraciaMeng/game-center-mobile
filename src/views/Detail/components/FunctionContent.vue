@@ -24,7 +24,11 @@
                 >
                   <div class="small">
                     <div class="small-ph"></div>
-                    <div class="img-ctr" :style="{ backgroundImage: `url(${valueItem.image})` }"></div>
+                    <div
+                      class="img-ctr"
+                      :style="{ backgroundImage: `url(${valueItem.image})` }"
+                      @click="previewImages(item.values, valueIndex, 'image')"
+                    ></div>
                   </div>
                   <span class="title">{{ valueItem.title }}</span>
                 </Col>
@@ -40,7 +44,11 @@
                 >
                   <div class="medium">
                     <div class="medium-ph"></div>
-                    <div class="img-ctr" :style="{ backgroundImage: `url(${valueItem.image})` }"></div>
+                    <div
+                      class="img-ctr"
+                      :style="{ backgroundImage: `url(${valueItem.image})` }"
+                      @click="previewImages(item.values, valueIndex, 'image')"
+                    ></div>
                   </div>
                   <span class="title">{{ valueItem.title }}</span>
                 </Col>
@@ -50,7 +58,7 @@
               <Row v-for="(valueItem, valueIndex) in item.values" :key="valueIndex">
                 <Col :span="24">
                   <div class="large">
-                    <img :src="valueItem" alt="大图" />
+                    <Image :src="valueItem" alt="大图" @click="previewImages(item.values, valueIndex)" />
                   </div>
                 </Col>
               </Row>
@@ -64,13 +72,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Col, Row } from 'vant'
+import { Col, Image, Row, showImagePreview } from 'vant'
 import SwitchTabs from '@/components/layout/SwitchTabs.vue'
 
 const props = defineProps<{
   tags: any[]
 }>()
 const active = ref('')
+
+function previewImages(values: any[], startPosition: number, attr?: string) {
+  const imgs = attr ? values.map((item) => item[attr]) : values
+  showImagePreview({
+    images: imgs,
+    startPosition,
+  })
+}
 </script>
 
 <style lang="less" scoped>

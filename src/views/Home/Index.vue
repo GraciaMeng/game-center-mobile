@@ -3,7 +3,7 @@
     <SearchBar :game-id="activeGameKey" />
     <GameBar v-model:active-key="activeGameKey" :game-list="gameList" @select="onSelectGame" />
     <SortCondition :condition-list="conditionList" @on-popup="onConditionPopup" />
-    <ProductList ref="ProductListRef" :load-fn="onLoad" @on-product-click="onProductClick" />
+    <ProductList ref="ProductListRef" :load-fn="onLoad" :immediate="false" @on-product-click="onProductClick" />
     <RightPopup
       v-model:show="conditionPopupState.area_id"
       @ok="onAreaOk"
@@ -151,7 +151,9 @@ const { gameList, getGameData } = useGameList()
 function loadGame() {
   getGameData().then((res) => {
     if (res.length) {
+      activeGameKey.value = res[0].id
       getAreaData(res[0].id)
+      ProductListRef.value?.onRefresh()
     }
   })
 }
