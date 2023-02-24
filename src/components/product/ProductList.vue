@@ -52,7 +52,6 @@ const onLoad = () => {
     refreshing.value = false
   }
   paginationState.page += 1
-  if (paginationState.page === 2) return
   props
     .loadFn({ page: paginationState.page, size: 15 })
     .then((res) => {

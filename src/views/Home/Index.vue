@@ -37,14 +37,14 @@
       <ButtonRadioGroup
         v-if="filterMap && filterChecked"
         v-model:checked="filterChecked!.role"
-        title="特效"
+        title="选择角色"
         :radio-list="filterMap?.role"
         :fields-name="{ label: 'title', value: 'id' }"
       />
       <ButtonRadioGroup
         v-if="filterMap && filterChecked"
         v-model:checked="filterChecked!.skin"
-        title="皮肤"
+        title="特效皮肤"
         :radio-list="filterMap?.skin"
         :fields-name="{ label: 'title', value: 'id' }"
       />
@@ -172,7 +172,6 @@ function getFilter(gameId: number) {
       prev[key] = undefined
       return prev
     }, {} as any)
-    console.log(filterChecked.value)
   })
 }
 

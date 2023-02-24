@@ -76,9 +76,6 @@ function getDetail() {
     ]
   })
 }
-onMounted(() => {
-  console.log(11)
-})
 getDetail()
 function onBackHome() {
   router.push({
