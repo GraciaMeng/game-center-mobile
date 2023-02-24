@@ -48,10 +48,10 @@ function getDetail() {
         ],
       },
       {
-        title: '皮肤',
+        title: '特效皮肤',
         tag: [
           {
-            title: '皮肤',
+            title: '特效皮肤',
             type: 'xl',
             num: skin_info.length,
             values: skin_info.map((item) => {

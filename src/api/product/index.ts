@@ -26,3 +26,8 @@ const GET_PRODUCT_INFO = `${BASE_URL}/api/game/getInfo`
 export function getProductInfo(params: { id: string }) {
   return request<ProductInfoResponse>(GET_PRODUCT_INFO, METHOD.POST, params)
 }
+
+const GET_FILTER_MAP = `${BASE_URL}/api/game/getFilter`
+export function getFilterMap(params: { game_id: number }) {
+  return request<any>(GET_FILTER_MAP, METHOD.POST, params)
+}

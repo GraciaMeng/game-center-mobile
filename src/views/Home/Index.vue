@@ -19,20 +19,35 @@
     </RightPopup>
     <RightPopup
       v-model:show="conditionPopupState.filter"
-      @ok="onPriceOk"
-      @click-overlay="onPriceReset"
-      @reset="onPriceReset"
+      @ok="onFilterOk"
+      @click-overlay="onFilterReset"
+      @reset="onFilterReset"
     >
       <ButtonRadioGroup
-        v-model:checked="priceChecked"
+        v-if="filterMap && filterChecked"
+        v-model:checked="filterChecked!.price"
         title="价格区间"
-        :radio-list="priceFilterMap"
+        :radio-list="filterMap?.price"
         :fields-name="{ label: 'title', value: 'id' }"
       >
         <template #extra>
           <PriceRange v-model:max="priceRange.max" v-model:min="priceRange.min" @focus="onPriceRangeFocus" />
         </template>
       </ButtonRadioGroup>
+      <ButtonRadioGroup
+        v-if="filterMap && filterChecked"
+        v-model:checked="filterChecked!.role"
+        title="特效"
+        :radio-list="filterMap?.role"
+        :fields-name="{ label: 'title', value: 'id' }"
+      />
+      <ButtonRadioGroup
+        v-if="filterMap && filterChecked"
+        v-model:checked="filterChecked!.skin"
+        title="皮肤"
+        :radio-list="filterMap?.skin"
+        :fields-name="{ label: 'title', value: 'id' }"
+      />
     </RightPopup>
     <ActionSheet
       v-model:show="conditionPopupState.order"
@@ -57,14 +72,14 @@ import GameBar from './components/GameBar.vue'
 import SortCondition from './components/SortCondition.vue'
 import RightPopup from './components/RightPopup.vue'
 import ButtonRadioGroup from './components/ButtonRadioGroup.vue'
-import { defaultConditionList, orderSortMap, priceFilterMap } from './config'
+import { defaultConditionList, orderSortMap } from './config'
 import type { OrderSort, SortType } from './types'
 import { useRadioSelect } from './hooks/useRadioSelect'
 import PriceRange from './components/PriceRange.vue'
 import ProductList from '@/components/product/ProductList.vue'
-import type { AreaInterface, ProductInterface } from '@/types'
+import type { AreaInterface, FilterMapInterface, ProductInterface } from '@/types'
 import { SortEnum } from '@/types'
-import { getAreaList, getProductList } from '@/api'
+import { getAreaList, getFilterMap, getProductList } from '@/api'
 import { useGameList, usePagePosition } from '@/hooks'
 
 const router = useRouter()
@@ -82,7 +97,7 @@ const conditionList = reactive(defaultConditionList())
 const onConditionPopup = (key: string) => {
   const map: Record<string, Function> = {
     area_id: handleArea,
-    filter: handlePrice,
+    filter: handleFilter,
   }
   if (map[key]) {
     map[key]()
@@ -117,6 +132,9 @@ const onSelectOrder = (action: OrderSort) => {
 }
 
 const [priceChecked, cachePrice, resetPriceChecked] = useRadioSelect<number | undefined>(undefined)
+const [filterChecked, cacheFilter, resetFilterChecked] = useRadioSelect<
+  Record<keyof FilterMapInterface, number | undefined> | undefined
+>(undefined)
 const priceRange = reactive({
   min: undefined as undefined | number,
   max: undefined as undefined | number,
@@ -125,11 +143,11 @@ const priceRangeCache = reactive({
   min: undefined as undefined | number,
   max: undefined as undefined | number,
 })
-function handlePrice() {
-  cachePrice()
+function handleFilter() {
+  cacheFilter()
   Object.assign(priceRangeCache, priceRange)
 }
-function onPriceOk() {
+function onFilterOk() {
   if (priceChecked.value) {
     conditionList[2].isSelect = true
   }
@@ -141,9 +159,21 @@ function resetPriceRange() {
 function onPriceRangeFocus() {
   priceChecked.value = undefined
 }
-function onPriceReset() {
+function onFilterReset() {
   resetPriceRange()
-  resetPriceChecked()
+  resetFilterChecked()
+}
+
+const filterMap = ref<FilterMapInterface | null>(null)
+function getFilter(gameId: number) {
+  getFilterMap({ game_id: gameId }).then((res) => {
+    filterMap.value = res.data
+    filterChecked.value = Object.keys(res.data).reduce((prev, key) => {
+      prev[key] = undefined
+      return prev
+    }, {} as any)
+    console.log(filterChecked.value)
+  })
 }
 
 const activeGameKey = ref(1)
@@ -153,6 +183,7 @@ function loadGame() {
     if (res.length) {
       activeGameKey.value = res[0].id
       getAreaData(res[0].id)
+      getFilter(res[0].id)
       ProductListRef.value?.onRefresh()
     }
   })
@@ -170,9 +201,9 @@ const getPriceRange = () => {
   let price_start = priceRange.min
   let price_end = priceRange.max
   if (priceChecked) {
-    const item = priceFilterMap.find((item) => item.id === priceChecked.value!)
-    price_start = item?.min
-    price_end = item?.max
+    const item = filterMap.value?.price.find((item) => item.id === priceChecked.value!) || ({} as any)
+    price_start = item?.min_price
+    price_end = item?.max_price
   }
   return { price_start, price_end }
 }
@@ -183,6 +214,8 @@ const onLoad = (pagination: { page: number; size: number }) => {
     game_id: activeGameKey.value,
     sort: order.value,
     area_id: areaChecked.value,
+    skin: filterChecked.value?.skin,
+    role: filterChecked.value?.role,
     ...getPriceRange(),
   }).then((res) => {
     return res.data

@@ -190,7 +190,7 @@ function previewImages(values: any[], startPosition: number, attr?: string) {
 
 .content {
   .text-box {
-    display: flex;
+    // display: flex;
     flex-wrap: wrap;
     p {
       min-width: 50%;

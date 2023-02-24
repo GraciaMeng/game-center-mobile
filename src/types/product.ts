@@ -29,6 +29,8 @@ export interface GetProductListParams {
   price_start?: number
   price_end?: number
   key?: string
+  skin?: number
+  role?: number
 }
 
 export interface SkinInfo {

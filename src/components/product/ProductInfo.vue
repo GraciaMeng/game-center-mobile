@@ -32,7 +32,7 @@ const props = defineProps<{
 
 const { copyToClipboard } = useCopy()
 const onCopy = () => {
-  copyToClipboard(String(props.info.id))
+  copyToClipboard(String(props.info.sn))
     .then(() => {
       showToast('复制成功')
     })
