@@ -1,2 +1,2 @@
 # 接口地址
-VITE_APP_API_URL = http://159.75.70.173:5200
+VITE_APP_API_URL = http://101.43.195.91:5200
